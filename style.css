@@ -1,0 +1,70 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+  color: #fff;
+  font-family: sans-serif;
+}
+
+main {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto;
+  grid-template-areas: 'display display display display'
+                       'clear clear clear divide'
+                       '7 8 9 multiply'
+                       '4 5 6 subtract'
+                       '1 2 3 add'
+                       'zero zero . equals';
+}
+
+h1 {
+  font-weight: 500;
+}
+
+button {
+  display: flex;
+  height: 40px;
+  min-width: 40px;
+  margin: 4px;
+  padding: 12px;
+  border: none;
+  border-radius: 30px;
+  background-color: #303030;
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.operator {
+  background-color: #ee8b00;
+}
+
+.display-container {
+  grid-area: display;
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  padding: .5rem;
+}
+
+#clear-btn {
+  grid-area: clear;
+}
+
+#zero-btn {
+  grid-area: zero;
+}
+
+
