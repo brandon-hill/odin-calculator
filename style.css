@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap');
+
 * {
   box-sizing: border-box;
 }
@@ -5,15 +7,16 @@
 html, body {
   height: 100%;
   width: 100%;
+  margin: 0;
 }
 
 body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #000;
+  background-color: #030203;
   color: #fff;
-  font-family: sans-serif;
+  font-family: 'Nunito', sans-serif;
 }
 
 main {
@@ -26,41 +29,74 @@ main {
                        '4 5 6 subtract'
                        '1 2 3 add'
                        'zero zero . equals';
+  background-color: #211f22;
+  padding: 1rem;
+  border-radius: 16px;
 }
 
 h1 {
-  font-weight: 500;
+  text-align: end;
+  width: 100%;
+  font-size: 2.6rem;
+  font-weight: 300;
 }
 
 button {
   display: flex;
-  height: 40px;
-  min-width: 40px;
-  margin: 4px;
-  padding: 12px;
+  height: 60px;
+  cursor: pointer;
+  min-width: 60px;
+  margin: .4rem;
+  padding: 16px;
   border: none;
   border-radius: 30px;
-  background-color: #303030;
+  background-color: #453f48;
   color: #fff;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1.6rem;
+  font-family: inherit;
 }
 
-.operator {
-  background-color: #ee8b00;
+button:hover {
+  background-color: #574d5c;
+}
+
+#decimal-btn.selected {
+  background-color: #2a272b;
+  color: #828282;
+  pointer-events: none;
+}
+
+.operator-btn {
+  background-color: #8a2ac6;
+  font-size: 2rem;
+}
+
+.operator-btn:hover {
+  background-color: #a543e2;
+}
+
+.operator-btn.selected {
+  background-color: #ffffff;
+  color: #8a2ac6;
 }
 
 .display-container {
   grid-area: display;
   display: flex;
+  background-color: #2a272b;
+  width: 100%;
+  border-radius: 8px;
   align-items: center;
+  margin: 0 0 .8rem;
   justify-self: end;
-  padding: .5rem;
+  padding: 0 1rem;
 }
 
 #clear-btn {
   grid-area: clear;
+  font-size: 1.2rem;
 }
 
 #zero-btn {
