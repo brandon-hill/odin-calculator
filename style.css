@@ -24,7 +24,7 @@ main {
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: auto;
   grid-template-areas: 'display display display display'
-                       'clear clear clear divide'
+                       'clear clear delete divide'
                        '7 8 9 multiply'
                        '4 5 6 subtract'
                        '1 2 3 add'
@@ -34,11 +34,11 @@ main {
   border-radius: 16px;
 }
 
-h1 {
+.current-operand {
   text-align: end;
-  width: 100%;
-  font-size: 2.6rem;
+  font-size: 2.4rem;
   font-weight: 300;
+  margin: 0;
 }
 
 button {
@@ -85,18 +85,30 @@ button:hover {
 .display-container {
   grid-area: display;
   display: flex;
+  flex-direction: column;
   background-color: #2a272b;
   width: 100%;
   border-radius: 8px;
-  align-items: center;
+  align-items: flex-end;
   margin: 0 0 .8rem;
-  justify-self: end;
-  padding: 0 1rem;
+  justify-content: space-around;
+  padding: 1rem;
+  min-height: 120px;
+}
+
+.previous-operand {
+  color: #aba0af;
+  font-size: 1.4rem;
 }
 
 #clear-btn {
   grid-area: clear;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
+}
+
+#delete-btn {
+  grid-area: delete;
+  font-size: 1.4rem;
 }
 
 #zero-btn {

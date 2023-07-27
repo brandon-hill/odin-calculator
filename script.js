@@ -1,139 +1,147 @@
-const numberBtns = document.querySelectorAll('.number-btn');
-const operatorBtns = document.querySelectorAll('.operator-btn');
-const decimalBtn = document.querySelector('#decimal-btn');
+const numberBtns = document.querySelectorAll('[data-number]');
+const operatorBtns = document.querySelectorAll('[data-operator]');
+const equalBtn = document.querySelector('#equals');
 const clearBtn = document.querySelector('#clear-btn');
+const deleteBtn = document.querySelector('#delete-btn');
+const previousOperandElement = document.querySelector('.previous-operand');
+const currentOperandElement = document.querySelector('.current-operand');
 
-let operand1 = '';
-let operand2 = '';
-let operator = '';
-let results = '';
-let decimal = false;
-
-const operations = {
-	add: (a, b) => a + b,
-	subtract: (a, b) => a - b,
-	multiply: (a, b) => a * b,
-	divide: (a, b) => a / b,
-};
-
-const handleDecimal = () => {
-	let displayValue = document.querySelector('#display-number');
-	decimal = true;
-	displayValue.textContent += '.';
-	decimalBtn.classList.toggle('selected');
-};
-
-const handleNumber = (number) => {
-	let displayValue = document.querySelector('#display-number');
-	if (results !== '' && !operator) {
-		operand1 = number;
-		results = '';
-		displayValue.textContent = operand1;
-	} else if (results !== '' && operator) {
-		if (displayValue.textContent == 0) {
-			operand2 = number;
-		} else {
-			operand2 += number;
-		}
-		displayValue.textContent = operand2;
-	} else if (operand1 === '' && !decimal) {
-		operand1 = number;
-		displayValue.textContent = operand1;
-	} else if (decimal) {
-		let numberArr = displayValue.textContent.split('');
-		numberArr.push(number);
-		console.log(numberArr);
-		operand1 = Number(numberArr.join(''));
-		console.log(operand1);
-		displayValue.textContent = operand1;
-	} else if (operand1 !== '' && !operator) {
-		if (operand1 == 0) {
-			operand1 = number;
-		} else {
-			operand1 += number;
-		}
-		displayValue.textContent = operand1;
-	} else if (operand1 !== '' && operator) {
-		if (operand2 == 0) {
-			operand2 = number;
-		} else {
-			operand2 += number;
-		}
-		let activeOperator = document.getElementById(`${operator}`);
-		activeOperator.classList.remove('selected');
-		displayValue.textContent = operand2;
-	} else {
-		console.log('what did you do?');
+class Calculator {
+	constructor(previousOperandElement, currentOperandElement) {
+		this.previousOperandElement = previousOperandElement;
+		this.currentOperandElement = currentOperandElement;
+		this.clear();
 	}
-};
 
-const handleOperator = (operatorClicked) => {
-	let displayValue = document.querySelector('#display-number');
-	if (!operator && results == '') {
-		operand1 = Number(displayValue.textContent);
-		if (operatorClicked.target.id !== 'equals') {
-			operator = operatorClicked.target.id;
-			operatorClicked.target.classList.add('selected');
+	clear() {
+		this.previousOperand = '';
+		this.currentOperand = '';
+		this.operator = undefined;
+	}
+
+	delete() {
+		this.currentOperand = this.currentOperand.toString().slice(0, -1);
+	}
+
+	appendNumber(number) {
+		if (number === '.' && this.currentOperand.toString().includes('.')) return;
+		this.currentOperand = this.currentOperand.toString() + number.toString();
+	}
+
+	setOperator(operator) {
+		if (this.currentOperand === '') return;
+		if (this.previousOperand !== '') {
+			this.compute();
 		}
-	} else if (!operator && results) {
-		operator = operatorClicked.target.id;
-		operatorClicked.target.classList.add('selected');
-	} else if (operator) {
-		let activeOperator = document.getElementById(`${operator}`);
-		activeOperator.classList.remove('selected');
-		if (operatorClicked.target.id !== 'equals') {
-			operatorClicked.target.classList.add('selected');
+		this.operator = operator;
+		this.previousOperand = this.currentOperand;
+		this.currentOperand = '';
+	}
+
+	compute() {
+		let result;
+		const previous = parseFloat(this.previousOperand);
+		const current = parseFloat(this.currentOperand);
+		if (isNaN(previous) || isNaN(current)) return;
+		switch (this.operator) {
+			case 'add':
+				result = previous + current;
+				break;
+			case 'subtract':
+				result = previous - current;
+				break;
+			case 'multiply':
+				result = previous * current;
+				break;
+			case 'divide':
+				if (current === 0) {
+					alert('Nice try');
+					return;
+				}
+				result = previous / current;
+				break;
+			default:
+				return;
 		}
-		operand2 = Number(displayValue.textContent);
-		if (activeOperator.id == 'divide' && operand2 == 0) {
-			clearAll();
-			displayValue.textContent = 'lol nope';
+		this.currentOperand = result;
+		this.operator = undefined;
+		this.previousOperand = '';
+	}
+
+	formatOperand(operand) {
+		let formattedOperand = operand.split('').slice(0, 11).join('');
+		return formattedOperand;
+	}
+
+	getDisplayNumber(number) {
+		let stringNumber = number.toString();
+		if (stringNumber.length > 11) {
+			stringNumber = this.formatOperand(stringNumber);
+		}
+		let integerDigits = parseFloat(stringNumber.split('.')[0]);
+		let decimalDigits = stringNumber.split('.')[1];
+		let integerDisplay;
+		if (isNaN(integerDigits)) {
+			integerDisplay = '';
 		} else {
-			results = operate(activeOperator.id, operand1, operand2);
-			if (results.toString().length > 10) {
-				results = results.toPrecision(10);
-				console.log(results);
-			}
-			operand1 = results;
-			operand2 = '';
-			if (operatorClicked.target.id == 'equals') {
-				operator = '';
-			} else {
-				operator = operatorClicked.target.id;
-			}
-			displayValue.textContent = results;
+			integerDisplay = integerDigits.toLocaleString('en', {
+				maximumFractionDigits: 0,
+			});
+		}
+		if (decimalDigits != null) {
+			return `${integerDisplay}.${decimalDigits}`;
+		} else {
+			return integerDisplay;
 		}
 	}
-};
 
-const operate = (operator, a, b) => operations[operator](a, b);
-
-const clearAll = () => {
-	operand1 = '';
-	operand2 = '';
-	operator = '';
-	results = '';
-	decimal = false;
-	let displayValue = document.querySelector('#display-number');
-	displayValue.textContent = '0';
-	let activeOperator = document.querySelector('.operator-btn.selected');
-	if (activeOperator) {
-		activeOperator.classList.remove('selected');
+	updateDisplay() {
+		this.currentOperandElement.innerText = this.getDisplayNumber(
+			this.currentOperand
+		);
+		if (this.operator != null) {
+			let operatorSymbol = document.getElementById(
+				`${this.operator}`
+			).innerText;
+			this.previousOperandElement.innerText = `${this.getDisplayNumber(
+				this.previousOperand
+			)} ${operatorSymbol}`;
+		} else {
+			this.previousOperandElement.innerText = '';
+		}
 	}
-};
+}
+
+const calculator = new Calculator(
+	previousOperandElement,
+	currentOperandElement
+);
 
 numberBtns.forEach((btn) =>
-	btn.addEventListener('click', (e) => handleNumber(e.target.textContent))
+	btn.addEventListener('click', () => {
+		calculator.appendNumber(btn.innerText);
+		calculator.updateDisplay();
+	})
 );
 
-operatorBtns.forEach((btn) =>
-	btn.addEventListener('click', (e) => handleOperator(e))
+operatorBtns.forEach((operator) =>
+	operator.addEventListener('click', () => {
+		calculator.setOperator(operator.id);
+		calculator.updateDisplay();
+	})
 );
 
-decimalBtn.addEventListener('click', (e) =>
-	handleDecimal(e.target.textContent)
-);
+equalBtn.addEventListener('click', () => {
+	calculator.compute();
+	calculator.updateDisplay();
+});
 
-clearBtn.addEventListener('click', (e) => clearAll());
+clearBtn.addEventListener('click', () => {
+	calculator.clear();
+	calculator.updateDisplay();
+});
 
-clearAll();
+deleteBtn.addEventListener('click', () => {
+	calculator.delete();
+	calculator.updateDisplay();
+});
